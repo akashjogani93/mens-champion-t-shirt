@@ -1,0 +1,12 @@
+.ban{
+	background:url(img/1.jpg);
+	height:100%;
+	width:100%;
+	background-size:cover;
+	background-repeat:repeat;
+	position:fixed;
+	}
+.pad{
+		padding:10px;
+		text-align:center;
+}
