@@ -1,5 +1,5 @@
- 
 <?php
+session_start();
 $conn = mysqli_connect('localhost','root','','project');
 
 if(isset($_POST['login'])){
@@ -8,8 +8,10 @@ if(isset($_POST['login'])){
 
     $ret = mysqli_query($conn, "SELECT user_id, email FROM user WHERE email = '$username' AND password = '$password'");
 
-    if(mysqli_num_rows($ret) > 0){
-        $row = mysqli_fetch_array($ret);
+    if (mysqli_num_rows($ret) > 0) {
+      $row = mysqli_fetch_array($ret);
+
+      $_SESSION['user_id'] = $row['user_id'];
         echo "<script>
                 alert('Login Successful');
                 location.href='index.php';
@@ -27,7 +29,7 @@ if(isset($_POST['login'])){
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
+    <title>Tshirt Printing</title>
 	<link href="login.css"rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   </head>
@@ -85,7 +87,6 @@ if(isset($_POST['login'])){
               <div class="d-flex justify-content-center py-4">
                 <a href="index.html" class="logo d-flex align-items-center w-auto">
                   
-                  <h5 class="small mb-0 pad" ><a href="Admin/adminlogin.php">shoping admin</a></h5>
                 </a>
               </div><!-- End Logo -->
 
@@ -94,12 +95,11 @@ if(isset($_POST['login'])){
                 <div class="card-body">
 
                   <div class="pt-4 pb-2">
+                    <h5 class="small mb-0 pad" ><a href="Admin/adminlogin.php">shoping admin</a></h5>
                     <h5 class="card-title text-center pb-0 fs-4">Login to Your Account</h5>
                     <p class="text-center small">Enter your username & password to login</p>
                   </div>
-
                   <form class="row g-3 needs-validation" method="POST">
-
                     <div class="col-12">
                       <label for="yourUsername" class="form-label">Username</label>
                       <div class="input-group has-validation">
@@ -115,7 +115,7 @@ if(isset($_POST['login'])){
                       <div class="invalid-feedback">Please enter your password!</div>
                     </div>
 						
-						<p class="small mb-0" > <a href="forgotpassword.php">Forgot Password</a></p>
+						        <p class="small mb-0" > <a href="forgotpassword.php">Forgot Password</a></p>
                    
                     <div class="col-12">
 					<p>

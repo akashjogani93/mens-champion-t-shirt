@@ -1,57 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Dashboard</title>
-  <link rel="stylesheet" href="dashboard.css" />
-</head>
-<body>
+<?php 
+  include("nav.php");
+  $conn = mysqli_connect('localhost','root','','project');
+?>
+
 <style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    display: flex;
-  }
-
-  .sidebar {
-    width: 220px;
-    background: linear-gradient(180deg, #2c2c54, #1e1e2f);
-    color: white;
-    height: 100vh;
-    padding: 20px 0;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.2);
-  }
-
-  .sidebar h2 {
-    text-align: center;
-    margin-bottom: 30px;
-  }
-
-  .sidebar ul {
-    list-style-type: none;
-    padding-left: 0;
-  }
-
-  .sidebar ul li {
-    padding: 15px 20px;
-  }
-
-  .sidebar ul li a {
-    color: white;
-    text-decoration: none;
-    display: block;
-  }
-
-  .sidebar ul li:hover {
-    background-color: #3b3b5f;
-    transition: background-color 0.3s ease;
-  }
-
-  .sidebar ul li a:hover {
-    color: #ffd369;
-  }
-
+  
   .main-content {
     flex-grow: 1;
     padding: 20px;
@@ -99,18 +52,19 @@
   }
 </style>
 
-<div class="sidebar">
-  <h2>Admin Panel</h2>
-  <ul>
-    <li><a href="#">Dashboard</a></li>
-    <li><a href="user/read.php">Users</a></li>
-    <li><a href="product/read.php">Products</a></li>
-    <li><a href="#">Orders</a></li>
-    <li><a href="#">Payments</a></li>
-    <li><a href="#">Settings</a></li>
-  </ul>
-</div>
+<?php 
+$userResult = mysqli_query($conn, "SELECT COUNT(*) AS total_users FROM user");
+$userRow = mysqli_fetch_assoc($userResult);
+$totalUsers = $userRow['total_users'];
 
+$orderResult = mysqli_query($conn, "SELECT COUNT(*) AS total_orders FROM orders WHERE `order_status`='Delevered'");
+$orderRow = mysqli_fetch_assoc($orderResult);
+$totalOrders = $orderRow['total_orders'];
+
+$revenueResult = mysqli_query($conn, "SELECT SUM(amount) AS total_revenue FROM payment WHERE `status`='completed'");
+$revenueRow = mysqli_fetch_assoc($revenueResult);
+$totalRevenue = $revenueRow['total_revenue'];
+?>
 <div class="main-content">
   <header>
     <h1>Dashboard Overview</h1>
@@ -119,15 +73,15 @@
   <div class="cards">
     <div class="card">
       <h3>Total Users</h3>
-      <p id="userCount">123</p>
+      <p id="userCount"><?php echo $totalUsers; ?></p>
     </div>
     <div class="card">
-      <h3>Total Orders</h3>
-      <p id="orderCount">258</p>
+      <h3>Total Orders Completed</h3>
+      <p id="orderCount"><?php echo $totalOrders; ?></p>
     </div>
     <div class="card">
       <h3>Revenue</h3>
-      <p>$15,300</p>
+      <p><?php echo $totalRevenue; ?></p>
     </div>
   </div>
 </div>

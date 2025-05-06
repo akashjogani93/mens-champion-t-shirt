@@ -1,18 +1,20 @@
 <?php
-session_start();
+include('navigation.php');
 $conn = mysqli_connect('localhost','root','','project');
-
+$uploadedFileName = '';
+$_SESSION['productid']=$_GET['id'];
+$userid=$_SESSION['user_id'] ?? '';
 // Handle design upload
-if (isset($_POST['upload']) && isset($_FILES['design_file'])) {
-    $id = $_GET['id'];
-    $fileName = $_FILES['design_file']['name'];
-    $fileTmp = $_FILES['design_file']['tmp_name'];
+// if (isset($_POST['upload']) && isset($_FILES['design_file'])) {
+//     $id = $_GET['id'];
+//     $fileName = $_FILES['design_file']['name'];
+//     $fileTmp = $_FILES['design_file']['tmp_name'];
 
-    $uploadPath = "uploads/" . basename($fileName);
-    move_uploaded_file($fileTmp, $uploadPath);
-
-    echo "<script>alert('Design uploaded successfully!'); window.location.href='product-details.php?id=$id';</script>";
-}
+//     $uploadPath = "Admin/product/uploads/" . basename($fileName);
+//     move_uploaded_file($fileTmp, $uploadPath);
+//     $uploadedFileName = $fileName;
+//     echo "<script>alert('Design uploaded successfully!'); window.location.href='product-details.php?id=$id';</script>";
+// }
 
 // Fetch product
 if (isset($_GET['id'])) {
@@ -28,14 +30,6 @@ if (isset($_GET['id'])) {
     exit;
 }
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title><?php echo $product['product_name']; ?> - Design</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.4/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
     body {
       background: linear-gradient(to right, #f0f2f5, #e3e9f1);
@@ -125,9 +119,20 @@ if (isset($_GET['id'])) {
     .btn-upload:hover {
       background-color: #2980b9;
     }
+
+    .uploaded-design {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 30%;
+        max-height: 30%;
+        object-fit: contain;
+        z-index: 1;
+      }
   </style>
-</head>
-<body>
+<!-- </head>
+<body> -->
 
 <div class="container mt-5">
   <h1 class="text-center mb-5 fw-bold">🎨 Customize Your Product</h1>
@@ -137,13 +142,14 @@ if (isset($_GET['id'])) {
       <div class="row align-items-center">
         <div class="col-md-6 mb-4 mb-md-0 position-relative text-center">
           <div style="position: relative; display: inline-block;">
-            <img src="product/<?php echo $product['file']; ?>" class="product-img img-fluid" alt="Product Image" />
+            <img src="admin/product/<?php echo $product['file']; ?>" class="product-img img-fluid" alt="Product Image" style="width: 100%; background-color: #f8f8f8;"/>
+            <img id="uploadedDesign" class="uploaded-design" style="display:none;" alt="Uploaded Design">
 
             <!-- Upload Button -->
-            <form method="POST" enctype="multipart/form-data" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2;">
+            <form method="POST" enctype="multipart/form-data" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2;"  onsubmit="return false;">
               <input type="file" name="design_file" id="design_file" class="d-none" accept=".jpg,.jpeg,.png,.svg" required>
               <label for="design_file" class="btn btn-upload">📤 Upload Design</label>
-              <button type="submit" name="upload" class="d-none" id="uploadBtn"></button>
+              <button  name="upload" class="d-none" id="uploadBtn"></button>
             </form>
           </div>
         </div>
@@ -152,22 +158,62 @@ if (isset($_GET['id'])) {
           <h3 class="mb-3"><?php echo $product['product_name']; ?></h3>
           <p class="mb-2 product-label">📂 Category: <span class="text-dark"><?php echo $product['product_category']; ?></span></p>
           <p class="mb-2 product-label">📝 Description: <span class="text-dark"><?php echo $product['product_description']; ?></span></p>
-          <p class="mb-4 product-label">💰 Price: <span class="text-success price-tag">$<?php echo $product['amount']; ?></span></p>
+          <p class="mb-4 product-label">💰 Price: <span class="text-success price-tag"><?php echo $product['amount']; ?></span></p>
 
           <!-- Login check before preview -->
-          <?php if (isset($_SESSION['user_id'])) { ?>
-            <a href="Admin/card/insert.php" class="btn btn-secondary mt-3">Preview Design</a>
-          <?php } else { ?>
-            <a href="login.php" onclick="return alertLogin();" class="btn btn-secondary mt-3">Preview Design</a>
-          <?php } ?>
+          <?php if (isset($_SESSION['user_id']))
+          { ?>
+            <form action="cardAdd.php" method="POST" id="addToCartForm">
+              <!-- Hidden input to store uploaded filename -->
+              <input type="hidden" name="uploaded_image" id="uploaded_image_input">
+              <!-- <input type="hidden" name="productID" id="productID" value="<?php echo $productid; ?>"> -->
+              <!-- <input type="hidden" name="userID" id="userID" value="<?php echo $userid; ?>"> -->
+              <button type="submit" class="btn btn-secondary mt-3">Add To Cart</button>
+            </form>
+            <?php } else { ?>
+              <a href="login.php" onclick="return alert('Please login first');" class="btn btn-secondary mt-3">Add To Cart</a>
+            <?php } ?>
         </div>
       </div>
     </div>
   </div>
 </div>
 
+<footer class="text-center mt-4 p-3 bg-light">
+  <p>&copy; 2025 Your E-Commerce Website</p>
+</footer>
+
 <!-- Scripts -->
 <script>
+
+document.getElementById('design_file').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  const formData = new FormData();
+  formData.append('design_file', file);
+  formData.append('Amount',<?php echo json_encode($product['amount']); ?>);
+  // Send file to upload.php
+  let log=fetch('upload.php', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.text())
+  .then(filename => {
+    // Show uploaded image preview
+    const uploadedImage = document.getElementById('uploadedDesign');
+    uploadedImage.src = 'Admin/product/uploads/' + filename;
+    uploadedImage.style.display = 'block';
+
+    // Set hidden input with filename
+    console.log(filename);
+    document.getElementById('uploaded_image_input').value = filename;
+
+    // Hide upload button
+    document.querySelector('label[for="design_file"]').style.display = 'none';
+  });
+  console.log(log)
+});
+
+
   const fileInput = document.getElementById('design_file');
   const uploadBtn = document.getElementById('uploadBtn');
 

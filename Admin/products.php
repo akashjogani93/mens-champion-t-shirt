@@ -1,20 +1,10 @@
 <?php
+include('navigation.php');
 $conn = mysqli_connect('localhost','root','','project');
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Style Sparks</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.4/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="new 1.css">
-</head>
-<body>
-
 <header class="bg-dark text-white p-3">
   <h1 class="text-center">Style Sparks</h1>
-  <section id="tshirts" class="pt-4">
+  <!-- <section id="tshirts" class="pt-4">
   <h2 >T-Shirts</h2>
   <div class="row">
     <?php
@@ -41,7 +31,7 @@ $conn = mysqli_connect('localhost','root','','project');
     </div>
     <?php } ?>
   </div>
-</section>
+</section> -->
 
 </header>
 
@@ -51,7 +41,7 @@ $conn = mysqli_connect('localhost','root','','project');
     $ret = mysqli_query($conn, "SELECT * FROM product ORDER BY product_id DESC");
     while ($row = mysqli_fetch_array($ret)) {
         $imageFile = $row['file'];
-        $imagePath = "product/" . $imageFile;
+        $imagePath = "Admin/product/" . $imageFile;
 
         // Fallback if image file is missing or invalid
         if (!file_exists($imagePath) || empty($imageFile)) {
@@ -60,9 +50,8 @@ $conn = mysqli_connect('localhost','root','','project');
     ?>
     <div class="col-md-4 mb-4">
       <div class="card h-100">
-        <!-- Debug (optional): echo the image path -->
-        <!-- <p><?php echo $imagePath; ?></p> -->
-        <img src="<?php echo $imagePath; ?>" class="card-img-top" alt="Product Image">
+        <img src="<?php echo $imagePath; ?>" class="card-img-top" alt="Product Image" 
+        style="height: 250px; width: 100%; object-fit: contain; background-color: #f8f8f8;">
         <div class="card-body">
           <h4 class="card-title"><?php echo $row['product_name']; ?></h4>
           <p class="card-text"><strong>Category:</strong> <?php echo $row['product_category']; ?></p>
@@ -75,6 +64,10 @@ $conn = mysqli_connect('localhost','root','','project');
     <?php } ?>
   </div>
 </div>
+      </br>
+      </br>
+      </br>
+      </br>
 
 <footer class="text-center mt-4 p-3 bg-light">
   <p>&copy; 2025 Your E-Commerce Website</p>

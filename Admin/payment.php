@@ -11,10 +11,8 @@
 		
 		
 			echo "<script>alert('Payment_sucsessfuly')</script>";		
-		
 	}
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">

@@ -8,7 +8,7 @@
 	}
 
 	// Now you can safely query the database
-	$read = mysqli_query($conn, "SELECT * FROM users where user_id = '$user_id'");
+	$read = mysqli_query($conn, "SELECT * FROM user where user_id = '$user_id'");
 ?>
 
 <!doctype html>
@@ -88,7 +88,7 @@
 			<?php 
 				$user_id = $_REQUEST['user_id'];
 				
-				$read = mysqli_query($conn, "SELECT * FROM users where user_id = '$user_id'");
+				$read = mysqli_query($conn, "SELECT * FROM user where user_id = '$user_id'");
 				
 				while($res = mysqli_fetch_array($read)){
 			?>
@@ -100,7 +100,7 @@
                       <label for="yourUsername" class="form-label">Username</label>
                       <div class="input-group has-validation">
                         <span class="input-group-text" id="inputGroupPrepend">@</span>
-                        <input type="text" name="username" class="form-control" id="yourUsername" value="<?php echo $res['username']?>">
+                        <input type="text" name="username" class="form-control" id="yourUsername" value="<?php echo $res['name']?>">
                         <div class="invalid-feedback">Please enter your username.</div>
                       </div>
                     </div>

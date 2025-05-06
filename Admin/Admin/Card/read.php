@@ -21,7 +21,6 @@
 						<th>size</th>
                         <th>quantity</th>
                         <th>Action</th>
-
 					</tr>
 				  </thead>
 				  <tbody>

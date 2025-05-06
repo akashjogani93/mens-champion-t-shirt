@@ -1,41 +1,67 @@
 <?php
+include("../nav.php");
 	$conn = mysqli_connect('localhost','root','','project');
 ?>
-
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  </head>
-  <body>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <div class="container">
+</br>
+</br>
+		<div class="row">
+			<div class="col-md-12">
+				<a href="#" class="btn btn-danger">Order Placed</a>
+				<a href="cancelrequested.php" class="btn btn-warning">Cancel Requested</a>
+				<a href="delevered.php" class="btn btn-warning">Delevered</a>
+				<a href="cancelled.php" class="btn btn-warning">Cancelled</a>
+			</div>
+		</div>
+		</br>
 		<div class="row">
 			<div class="col-md-12">
 				<table class="table">
 				  <thead class="table-dark">
 					<tr>
-						<th>id</th>
-						<th>date</th>
-                        <th>amount</th>
-                        <th>Action</th>
+						<th>Order Id</th>
+						<th>Username</th>
+						<th>Order Date</th>
+						<th>Product Name</th>
+						<th>Order Size</th>
+						<th>Order Qty</th>
+                        <th>Order Amount</th>
+                        <th>Order Status</th>
+                        <th>Delever</th>
 					</tr>
 				  </thead>
 				  <tbody>
 				  <?php 
-					$read = mysqli_query($conn, "select * from order");
-					
-					while($res = mysqli_fetch_array($read)){
+				  	 $query = "SELECT 
+					   orders.order_date,
+					   orders.order_status,
+					   orders.order_id,
+					   orders.size,
+					   orders.qty,
+					   orders.rate,
+					   orders.order_amount,
+					   orders.order_status,
+						product.product_name,
+						user.name
+						FROM orders
+						JOIN product ON product.product_id = orders.productid
+						JOIN user ON user.user_id = orders.userid
+						WHERE orders.order_status='Placed'";
+					$ret = mysqli_query($conn, $query);
+                        
+					while ($product = mysqli_fetch_assoc($ret)) {
 				  ?>
 					<tr>
-						<td><?php echo $res['order_id']?></td>
-						<td><?php echo $res['date']?></td>
-                        <td><?php echo $res['amount']?></td>
-						<td><a href="edit.php?id=<?php echo $res['order_id'] ?>" class="btn btn-success">Edit</a>|| 
-                        <a href="delate.php?id=<?php echo $res['order_id']?>" class="btn btn-danger">Delete</a> || 
-						</td>
+						<td><?php echo $product['order_id']?></td>
+						<td><?php echo $product['name']?></td>
+						<td><?php echo $product['order_date']?></td>
+						<td><?php echo $product['product_name']?></td>
+						<td><?php echo $product['size']?></td>
+						<td><?php echo $product['qty']?></td>
+						<td><?php echo $product['order_amount']?></td>
+						<td><?php echo $product['order_status']?></td>
+						<td><button class="btn btn-warning" onclick="delevered(<?php echo $product['order_id']?>)">Deleverd</button></td>
                     </tr>
 					<?php 
 					}
@@ -44,8 +70,26 @@
 				</table>
 			</div>
 		</div>
-	
 	</div>
+	<script>
+		function delevered(orderid)
+		{
+			console.log(orderid)
+			let log=jQuery.ajax({
+				type: 'post',
+				url: 'status_process.php',
+				data: "orderid=" + orderid,
+				success: function(result)
+				{
+					console.log(result);
+					alert(result)
+					window.location.href = "read.php";
+				}
+			});
+			console.log(log);
+		}
+
+	</script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   </body>
 </html>

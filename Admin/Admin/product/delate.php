@@ -1,11 +1,12 @@
 <?php
+	$conn=mysqli_connect('localhost','root','','project');
 	
-	$conn = mysqli_connect('localhost','root','','project');
-	$category_id = $_REQUEST['id'];
-	$delete = mysqli_query($conn, "DELETE FROM product_category WHERE category_id = '$category_id'");
+	$product_id = $_REQUEST['id'];
 	
+	$delete=mysqli_query($conn,"delete from product where product_id = '$product_id'");	
 	if($delete){
-		echo "<script>alert('Data Deleted')</script>";
+		echo "<script>alert('Product Deleted'); window.location='read.php';</script>";
+
 	}
 
 ?>

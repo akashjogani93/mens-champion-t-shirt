@@ -1,20 +1,46 @@
 <?php 
 	$conn = mysqli_connect('localhost','root','','project');
 	$product_id = $_REQUEST['id'];
-	
-	if(isset($_POST['edit'])){
+	// echo $product_id;
+	if (isset($_POST['edit'])) {
 		$name = $_POST['name'];
 		$category = $_POST['category'];
 		$description = $_POST['description'];
 		$amount = $_POST['amount'];
+	
+		// File handling
 		$file_name = $_FILES["file"]["name"];
 		$temp_name = $_FILES["file"]["tmp_name"];
 		$folder = "uploads/" . $file_name;
-		
-		$update = mysqli_query($conn, "update product set name = '$product_name', category = '$product_category', description = '$product_description', amount = '$amount',file='$folder'where product_id = '$product_id' ");
-		
-		if($update){
-			echo"<script>alert('Data Updated')</script>";
+	
+		// Move file only if new file is uploaded
+		if (!empty($file_name)) {
+			move_uploaded_file($temp_name, $folder);
+	
+			// Update with new file
+			$update = mysqli_query($conn, "UPDATE product SET 
+				product_name = '$name', 
+				product_category = '$category', 
+				product_description = '$description', 
+				amount = '$amount', 
+				file = '$folder' 
+				WHERE product_id = '$product_id'
+			");
+		} else {
+			// Update without changing the file
+			$update = mysqli_query($conn, "UPDATE product SET 
+				product_name = '$name', 
+				product_category = '$category', 
+				product_description = '$description', 
+				amount = '$amount' 
+				WHERE product_id = '$product_id'
+			");
+		}
+	
+		if ($update) {
+			echo "<script>alert('Data Updated'); window.location='read.php';</script>";
+		} else {
+			echo "<script>alert('Update Failed');</script>";
 		}
 	}
 ?>
@@ -36,7 +62,7 @@
 					
 					while($res = mysqli_fetch_array($read)){
 				?>
-				<form method="post">
+				<form method="post" enctype="multipart/form-data">
 				  <div class="mb-3">
 					<label for="exampleInputEmail1" class="form-label">name</label>
 					<input type="text" name="name" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" value="<?php echo $res['product_name'] ?>">
