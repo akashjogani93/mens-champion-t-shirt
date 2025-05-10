@@ -13,6 +13,7 @@ if(isset($_POST['amt']))
     $productid = $_POST['productid'];
     $quantity = $_POST['quantity'];
     $size = $_POST['size'];
+    $userid = $_POST['userid'];
 
     // 1. Update user table
     $sql = "UPDATE `user` 

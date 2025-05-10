@@ -69,6 +69,12 @@ if (isset($_POST['uploaded_image']))
 							<button type="button" class="btn btn-outline-primary" onclick="selectSize('XL')">XL</button>
 							<button type="button" class="btn btn-outline-primary" onclick="selectSize('XXL')">XXL</button>
 							<button type="button" class="btn btn-outline-primary" onclick="selectSize('BIG')">BIG</button>
+							<button type="button" class="btn btn-outline-primary" onclick="selectSize('Iphone')">Iphone</button>
+							<button type="button" class="btn btn-outline-primary" onclick="selectSize('Vivo')">Vivo</button>
+							<button type="button" class="btn btn-outline-primary" onclick="selectSize('Samsung')">Samsung</button>
+							<button type="button" class="btn btn-outline-primary" onclick="selectSize('Poco')">Poco</button>
+							<button type="button" class="btn btn-outline-primary" onclick="selectSize('Motorola')">Motorola</button>
+							<button type="button" class="btn btn-outline-primary" onclick="selectSize('Redmi')">Redmi</button>
 							<button type="button" class="btn btn-outline-primary" onclick="selectSize('OTHERS')">OTHERS</button>
 						</div>
 						<!-- Hidden input to store selected size -->
